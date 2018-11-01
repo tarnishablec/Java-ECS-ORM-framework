@@ -31,6 +31,7 @@ public class DBManager {
         );
     }
 
+
     public static Connection createConn(){
         try {
             Class.forName(configuration.getDriver());

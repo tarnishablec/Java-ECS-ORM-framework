@@ -1,14 +1,14 @@
 package ECScore;
 
+import MyUtils.JavaFileUtils;
 import ORMcore.DBManager;
 import ORMcore.DBMapper;
 import ORMcore.DBTable;
+import ORMcore.MysqlTypeConvertor;
+import com.sun.source.tree.TryTree;
 
 import java.lang.reflect.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class EntityManager {
@@ -17,6 +17,13 @@ public class EntityManager {
 
     static {
         entityPool=new ArrayList<>(10);
+    }
+
+    public static void init(){
+        Map<String,DBTable> map=DBMapper.tables;
+        for (var t:map.values()){
+            JavaFileUtils.createJavaFile(t,new MysqlTypeConvertor());
+        }
     }
 
     private static class EntityManagerInstance{
@@ -92,34 +99,31 @@ public class EntityManager {
         entityPool.remove(entity);
     }
 
-    public static ArrayList<Entity> loadEntity(Class clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException, ClassNotFoundException {
+    public static ArrayList<Entity> loadEntity(Class clazz){
         ArrayList<Entity> entityList= new ArrayList<>();
-        EntityArchetype ea = EntityManager.createArchetype(clazz);
+        try {
+            Connection conn = DBManager.createConn();
+            for (DBTable t:DBMapper.tables.values()){
+                if (t.getTableName().equalsIgnoreCase(clazz.getSimpleName())){
+                    String sql="select * from "+t.getTableName();
+                    assert conn != null;
+                    ResultSet rs = conn.prepareStatement(sql).executeQuery();
 
-
-        for (DBTable t:DBMapper.tables.values()){
-            if (t.getTableName().equalsIgnoreCase(clazz.getSimpleName())){
-                String sql="select * from "+t.getTableName();
-                Connection conn = DBManager.createConn();
-                assert conn != null;
-                ResultSet rs = conn.prepareStatement(sql).executeQuery();
-
-                Field[] fields=clazz.getFields();
-                IComponentData iComponent = null;
-                while (rs.next()){
-
-                    for (Field f:fields){
+                    Field[] fields=clazz.getFields();
+                    IComponentData iComponent = null;
+                    while (rs.next()){
                         iComponent = (IComponentData) clazz.getConstructor().newInstance();
-                        f.set(iComponent,rs.getObject(f.getName()));
-                    }
-                    if (iComponent!=null){
+                        for (Field f:fields){
+                            f.set(iComponent,rs.getObject(f.getName()));
+                        }
                         Entity entity = EntityManager.createEntity(iComponent);
                         entityList.add(entity);
                     }
                 }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
         return entityList;
     }
 

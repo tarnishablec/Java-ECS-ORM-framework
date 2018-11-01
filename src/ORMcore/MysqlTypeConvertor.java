@@ -13,8 +13,7 @@ public class MysqlTypeConvertor implements DBTypeConvertor {
         else if ("double".equalsIgnoreCase(columnType)){return "Double";}
         else if ("float".equalsIgnoreCase(columnType)){return "Float";}
         else if ("date".equalsIgnoreCase(columnType)){return "java.sql.Date";}
-        else if ("datetime".equalsIgnoreCase(columnType)){return "java.sql.Time";}
-        else if ("timestamp".equalsIgnoreCase(columnType)){return "java.sql.Timestamp";}
+        else if ("datetime".equalsIgnoreCase(columnType)){return "java.sql.Timestamp";}
         return null;
     }
 

@@ -22,7 +22,8 @@ public class DBMapper {
                 String tableName = (String) tableSet.getObject("TABLE_NAME");
                 DBTable ti = new DBTable(tableName, new HashMap<>(),new DBColumn());
                 if (ti.getTableName().equals("account")||ti.getTableName().equals("appointment")){                                      //有问题！！！！！
-                tables.put(tableName, ti);}                                                                                             //有问题！！！！！
+                    tables.put(tableName, ti);                                                                                          //有问题！！！！！
+                }                                                                                                                       //有问题！！！！！
 
                 ResultSet columns = dmd.getColumns(null, "%", tableName, "%");
                 while (columns.next()) {
@@ -30,7 +31,6 @@ public class DBMapper {
                     ti.getColumns().put(columns.getString("COLUMN_NAME"), ci);
                 }
             }
-
         }catch (SQLException e){
             e.printStackTrace();
         }

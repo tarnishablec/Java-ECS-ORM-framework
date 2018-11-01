@@ -13,10 +13,7 @@ import ORMcore.*;
 public class JavaFileUtils {
 
     public static void main(String[] args) {
-        Map<String,DBTable> map=DBMapper.tables;
-        for (var t:map.values()){
-            JavaFileUtils.createJavaFile(t,new MysqlTypeConvertor());
-        }
+
     }
 
     private static JavaFieldGetSet createFieldGetSetSRC(DBColumn column, DBTypeConvertor convertor) {
@@ -41,10 +38,10 @@ public class JavaFileUtils {
 
         src.append("package ").append(DBManager.getConfiguration().getComponentPath()).append(";\n\n");
 
-        src.append("import java.sql.*;\n");
-        src.append("import java.util.*;\n");
+        src.append("import ECScore.*;\n");
+//        src.append("import java.util.*;\n");
 
-        src.append("public class ").append(StringUtils.firstChar2UpCase(table.getTableName())).append("{\n\n");
+        src.append("public class ").append(StringUtils.firstChar2UpCase(table.getTableName())).append(" implements IComponentData{\n\n");
 
         for (JavaFieldGetSet f:javaFields){
             src.append(f.getFieldInfo());
@@ -55,7 +52,7 @@ public class JavaFileUtils {
         return src.toString();
     }
 
-    static void createJavaFile(DBTable table, DBTypeConvertor convertor){
+    public static void createJavaFile(DBTable table, DBTypeConvertor convertor){
         String src = createJavaSrc(table,convertor);
 
         String srcPath = DBManager.getConfiguration().getSrcPath()+"\\";
