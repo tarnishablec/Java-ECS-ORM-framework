@@ -2,3 +2,6 @@
 Entity componenet system with object relation mapping
 ![Image text](https://github.com/tarnishablec/Java-ECS-ORM-framework/blob/master/src/Map.jpg)
       
+参考：https://blog.codingnow.com/2017/06/overwatch_ecs.html#more
+      
+目前尚未完善
