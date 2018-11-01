@@ -13,7 +13,7 @@ import java.util.*;
 
 public class EntityManager {
 
-    private static ArrayList<Entity> entityPool;
+    public static ArrayList<Entity> entityPool;
 
     static {
         entityPool=new ArrayList<>(10);
@@ -105,13 +105,14 @@ public class EntityManager {
                 ResultSet rs = conn.prepareStatement(sql).executeQuery();
 
                 Field[] fields=clazz.getFields();
-                IComponentData iComponent;
+                IComponentData iComponent = null;
                 while (rs.next()){
+
                     for (Field f:fields){
-                        String columnName = f.getAnnotation(FieldAnnotation.class).columnName();
-//                        System.out.println(rs.getObject(columnName).getClass());
                         iComponent = (IComponentData) clazz.getConstructor().newInstance();
                         f.set(iComponent,rs.getObject(f.getName()));
+                    }
+                    if (iComponent!=null){
                         Entity entity = EntityManager.createEntity(iComponent);
                         entityList.add(entity);
                     }

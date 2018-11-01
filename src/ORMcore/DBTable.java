@@ -21,7 +21,7 @@ public class DBTable {
         this.tableName = tableName;
     }
 
-    Map<String, DBColumn> getColumns() {
+    public Map<String, DBColumn> getColumns() {
         return columns;
     }
 

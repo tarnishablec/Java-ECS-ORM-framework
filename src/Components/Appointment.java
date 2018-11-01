@@ -5,8 +5,7 @@ import ECScore.IComponentData;
 import java.sql.Timestamp;
 
 public class Appointment implements IComponentData {
-    public String recordId;
-    public Timestamp appointmentTime;
+    public Integer recordId;
     public String item;
     public String inspect;
     public String supply;
